@@ -30,7 +30,7 @@ namespace RR_NEU_API
             services.AddMvc();
             services.AddCors();
 
-          var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+          var connectionString = Environment.GetEnvironmentVariable("DATABASE_CS");
           services.AddEntityFrameworkNpgsql().AddDbContext<RRContext>(options => options.UseNpgsql(connectionString));
 
           services.AddScoped<IRRRepository, RRRepository>();

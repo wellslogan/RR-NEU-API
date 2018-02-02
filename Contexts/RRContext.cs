@@ -15,7 +15,7 @@ namespace RR_NEU_API.Contexts {
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"));
+                optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_CS"));
             }
         }
 
