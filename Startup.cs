@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using RR_NEU_API.Contexts;
 using RR_NEU_API.Repository;
 
 namespace RR_NEU_API
@@ -29,8 +30,10 @@ namespace RR_NEU_API
             services.AddMvc();
             services.AddCors();
 
-          var connectionString = Configuration.GetConnectionString("BlogContext");
+          var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
           services.AddEntityFrameworkNpgsql().AddDbContext<RRContext>(options => options.UseNpgsql(connectionString));
+
+          services.AddScoped<IRRRepository, RRRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,12 +41,14 @@ namespace RR_NEU_API
         {
             if (env.IsDevelopment())
             {
+                Console.WriteLine("Warning! Running in Development environment!");
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(builder => builder.AllowAnyOrigin()
+                                .AllowAnyMethod()
+                                .AllowAnyHeader());
             app.UseMvc();
-
-            app.UseCors(builder => builder.AllowAnyHeader());
         }
     }
 }
