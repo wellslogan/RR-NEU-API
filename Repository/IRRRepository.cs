@@ -12,8 +12,12 @@ namespace RR_NEU_API.Repository {
 
     Task Add(Restroom item);
 
+    Task AddReview(Review review);
+
     Task<IList<Restroom>> GetAll();
 
     Task<Restroom> GetById(int id);
+
+    Task<IList<Restroom>> Search(string q);
   }
 }

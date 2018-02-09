@@ -21,6 +21,12 @@ namespace RR_NEU_API.Repository {
         await _context.SaveChangesAsync();
     }
 
+    public async Task AddReview(Review review) 
+    {
+      await _context.Reviews.AddAsync(review);
+      await _context.SaveChangesAsync();
+    }
+
     public async Task<IList<Restroom>> GetAll()
     {
         return await _context.Restrooms.ToListAsync();
@@ -28,7 +34,12 @@ namespace RR_NEU_API.Repository {
 
     public async Task<Restroom> GetById(int id)
     {
-      return await _context.Restrooms.FirstOrDefaultAsync(r => r.Id == id);
+      return await _context.Restrooms.Include(r => r.Reviews).FirstOrDefaultAsync(r => r.Id == id);
+    }
+
+    public async Task<IList<Restroom>> Search(string q)
+    {
+      return await _context.Restrooms.Where(r => r.Description.ToLower().Contains(q.ToLower())).ToListAsync();
     }
   }
 }

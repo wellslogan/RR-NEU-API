@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace RR_NEU_API.Models
 {
@@ -13,6 +14,10 @@ namespace RR_NEU_API.Models
       public string Longitude { get; set; }
 
       public DateTime CreateDate { get; set; }
+
+      public string Location { get; set; }
+
+      public virtual List<Review> Reviews { get; set; }
 
     }
 }
