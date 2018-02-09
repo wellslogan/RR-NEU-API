@@ -35,6 +35,13 @@ namespace RR_NEU_API.Controllers
                 return Ok(new {Success = false});
             }
 
+            var successfulCaptcha = await GoogleController.ValidateRecaptcha(reviewRequest.RecaptchaResponse);
+
+            if (!successfulCaptcha) 
+            {
+                return Ok(new { Success = false});
+            }
+
             await RRRepo.AddReview(review);
             return Ok(new {Success = true});
         }

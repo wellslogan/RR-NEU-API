@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace RR_NEU_API.Controllers {
 
@@ -39,6 +40,37 @@ namespace RR_NEU_API.Controllers {
           return BadRequest($"Error getting address {ex.Message}");
         }
       }
+    }
+
+    public static async Task<bool> ValidateRecaptcha(string recaptchaResponse)
+    {
+        using (var client = new HttpClient())
+        {
+            try 
+            {
+                client.BaseAddress = new Uri("https://www.google.com");
+                var request = $"/recaptcha/api/siteverify?secret={Environment.GetEnvironmentVariable("GOOGLE_RECAPTCHA_KEY")}&response={recaptchaResponse}";
+
+                var reqPayload = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(request, reqPayload);
+
+                response.EnsureSuccessStatusCode();
+
+                var stringRes = await response.Content.ReadAsStringAsync();
+
+                JObject jsonRes = JObject.Parse(stringRes);
+
+                var success = (bool)jsonRes["success"];
+
+                return success;
+            } 
+            catch (HttpRequestException ex) 
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
     }
 
   }
