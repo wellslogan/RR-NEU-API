@@ -13,16 +13,14 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.1" />
+    <PackageReference Include="Google.Apis.Core" Version="1.32.2" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.32.2" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-  <DotNetCliToolReference 
-      Include="Microsoft.EntityFrameworkCore.Tools" 
-      Version="2.0.1" />
-  <DotNetCliToolReference 
-      Include="Microsoft.EntityFrameworkCore.Tools.DotNet" 
-      Version="2.0.1" /> 
+  <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
+  <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" /> 
   </ItemGroup>
 </Project>

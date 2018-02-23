@@ -19,5 +19,11 @@ namespace RR_NEU_API.Repository {
     Task<Restroom> GetById(int id);
 
     Task<IList<Restroom>> Search(string q);
+
+    Task<Author> GetAuthorByGoogleId(string id);
+
+    Task AddAuthorAsync(Author a);
+
+    Task<IList<Review>> GetReviewsByAuthorId(int id);
   }
 }

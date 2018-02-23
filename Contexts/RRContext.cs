@@ -13,6 +13,8 @@ namespace RR_NEU_API.Contexts {
 
         public virtual DbSet<Review> Reviews { get; set; }
 
+        public virtual DbSet<Author> Authors { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -65,15 +67,28 @@ namespace RR_NEU_API.Contexts {
 
                 entity.Property(e => e.Rating).HasColumnName("rating");
 
-                entity.Property(e => e.Author).HasColumnName("author");
-
                 entity.Property(e => e.RestroomId).HasColumnName("restroomId");
 
-                // entity.HasOne(e => e.Restroom)
-                //     .WithMany(r => r.Reviews)
-                //     .HasForeignKey(e => e.Id)
-                //     .HasConstraintName("restrooms.id");
+                entity.Property(e => e.AuthorId).HasColumnName("author_id");
 
+                entity.Property(e => e.AuthorIsAnonymous).HasColumnName("author_is_anonymous");
+
+                entity.HasOne(r => r.Author).WithMany(a => a.Reviews).HasForeignKey(e => e.AuthorId);
+            });
+
+            modelBuilder.Entity<Author>(entity =>
+            {
+                entity.ToTable("authors", "dbo");
+
+                entity.Property(e => e.Id)
+                      .HasColumnName("id")
+                      .HasDefaultValueSql("nextval('dbo.authors_id_seq'::regclass)");
+
+                entity.Property(e => e.GoogleId).HasColumnName("google_id");
+
+                entity.Property(e => e.Name).HasColumnName("name");
+
+                entity.HasMany(e => e.Reviews).WithOne(r => r.Author).HasForeignKey(e => e.AuthorId);
 
             });
 

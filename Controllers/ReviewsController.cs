@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using RR_NEU_API.Models;
@@ -19,6 +21,7 @@ namespace RR_NEU_API.Controllers
             RRRepo = _repo;
         }
 
+        [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody]AddReviewRequest reviewRequest) 
         {
@@ -29,8 +32,7 @@ namespace RR_NEU_API.Controllers
 
             var review = reviewRequest.Review;
 
-            if (string.IsNullOrEmpty(review.Title) 
-                || string.IsNullOrEmpty(review.Author)) 
+            if (string.IsNullOrEmpty(review.Title)) 
             {
                 return Ok(new {Success = false});
             }
@@ -41,6 +43,19 @@ namespace RR_NEU_API.Controllers
             {
                 return Ok(new { Success = false});
             }
+
+            // now that we've successfully passed all validations, get the Author id
+            // from the User object and add the review
+            var googleId = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (googleId == null) 
+            {
+                return BadRequest();
+            }
+
+            var author = await RRRepo.GetAuthorByGoogleId(googleId);
+
+            review.Author = author;
 
             await RRRepo.AddReview(review);
             return Ok(new {Success = true});

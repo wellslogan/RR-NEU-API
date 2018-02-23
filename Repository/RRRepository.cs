@@ -34,12 +34,33 @@ namespace RR_NEU_API.Repository {
 
     public async Task<Restroom> GetById(int id)
     {
-      return await _context.Restrooms.Include(r => r.Reviews).FirstOrDefaultAsync(r => r.Id == id);
+            return await _context.Restrooms
+                                 .Include(r => r.Reviews)
+                                    .ThenInclude(review => review.Author)
+                                 .FirstOrDefaultAsync(r => r.Id == id);
     }
 
     public async Task<IList<Restroom>> Search(string q)
     {
       return await _context.Restrooms.Where(r => r.Description.ToLower().Contains(q.ToLower())).ToListAsync();
+    }
+
+    public async Task<Author> GetAuthorByGoogleId(string id) 
+    {
+        return await _context.Authors.FirstOrDefaultAsync(a => a.GoogleId == id);
+    }
+
+    public async Task AddAuthorAsync(Author a) 
+    {
+        await _context.Authors.AddAsync(a);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<IList<Review>> GetReviewsByAuthorId(int id) 
+    {
+        return await _context.Reviews
+                             .Include(review => review.Restroom)
+                             .Where(r => r.AuthorId == id).ToListAsync();
     }
   }
 }

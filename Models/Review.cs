@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace RR_NEU_API.Models 
 {
@@ -12,13 +13,20 @@ namespace RR_NEU_API.Models
 
     public int Rating { get; set; }
 
-    public string Author { get; set; }
-
     public DateTime CreateDate { get; set; }
 
+    [JsonIgnore]
     public int RestroomId { get; set; }
 
+    [JsonIgnore]
+    public int AuthorId { get; set; }
+
+    [JsonIgnore]
+    public bool AuthorIsAnonymous { get; set; }
+
     public Restroom Restroom { get; set; }
+
+    public Author Author { get; set; }
 
   }
 }

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RR_NEU_API.Models;
@@ -33,8 +34,18 @@ namespace RR_NEU_API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id) 
         {
-            var result = await RRRepo.GetById(id);
-            return Ok(result);
+            var room = await RRRepo.GetById(id);
+
+            foreach (var review in room.Reviews) 
+            {
+                if (review.AuthorIsAnonymous) 
+                {
+                    review.Author = null;
+                    review.AuthorId = -1;
+                }
+            }
+
+            return Ok(room);
         }
 
         [HttpGet("search")]
@@ -44,7 +55,7 @@ namespace RR_NEU_API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("add")]
+        [HttpPost("add"), Authorize]
         public async Task<IActionResult> Add([FromBody]AddRestroomRequest restroomRequest) 
         {
             if (restroomRequest == null || restroomRequest.Restroom == null) 
