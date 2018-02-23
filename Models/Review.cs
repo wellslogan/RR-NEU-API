@@ -15,13 +15,10 @@ namespace RR_NEU_API.Models
 
     public DateTime CreateDate { get; set; }
 
-    [JsonIgnore]
     public int RestroomId { get; set; }
 
-    [JsonIgnore]
     public int AuthorId { get; set; }
 
-    [JsonIgnore]
     public bool AuthorIsAnonymous { get; set; }
 
     public Restroom Restroom { get; set; }

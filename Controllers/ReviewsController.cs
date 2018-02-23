@@ -21,8 +21,7 @@ namespace RR_NEU_API.Controllers
             RRRepo = _repo;
         }
 
-        [Authorize]
-        [HttpPost("add")]
+        [HttpPost("add"), Authorize]
         public async Task<IActionResult> Add([FromBody]AddReviewRequest reviewRequest) 
         {
             if (reviewRequest == null || reviewRequest.Review == null) 
@@ -54,8 +53,10 @@ namespace RR_NEU_API.Controllers
             }
 
             var author = await RRRepo.GetAuthorByGoogleId(googleId);
+            var restroom = await RRRepo.GetById(review.RestroomId);
 
             review.Author = author;
+            review.Restroom = restroom;
 
             await RRRepo.AddReview(review);
             return Ok(new {Success = true});
