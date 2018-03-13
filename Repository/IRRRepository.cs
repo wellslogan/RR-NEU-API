@@ -25,5 +25,9 @@ namespace RR_NEU_API.Repository {
     Task AddAuthorAsync(Author a);
 
     Task<IList<Review>> GetReviewsByAuthorId(int id);
+
+    Task<bool> CheckAuthorOwnsReviewByGoogleId(int reviewId, string googleId);
+
+    Task DeleteReviewById(int id);
   }
 }

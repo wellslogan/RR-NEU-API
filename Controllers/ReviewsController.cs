@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using RR_NEU_API.Models;
+using RR_NEU_API.ViewModels;
 using RR_NEU_API.Repository;
 
 namespace RR_NEU_API.Controllers
 {
     [Route("api/[controller]")]
-    public class ReviewsController : Controller
+    public class ReviewsController : BaseController
     {
-        public IRRRepository RRRepo { get; set; }
         public ReviewsController(IRRRepository _repo)
         {
             RRRepo = _repo;
@@ -45,7 +45,7 @@ namespace RR_NEU_API.Controllers
 
             // now that we've successfully passed all validations, get the Author id
             // from the User object and add the review
-            var googleId = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            var googleId = GetUserGoogleId();
 
             if (googleId == null) 
             {
@@ -60,6 +60,37 @@ namespace RR_NEU_API.Controllers
 
             await RRRepo.AddReview(review);
             return Ok(new {Success = true});
+        }
+
+        [HttpDelete("review/{id}"), Authorize]
+        public async Task<IActionResult> deleteReview(int? id) 
+        {
+            if (id == null) 
+                return BadRequest();
+
+			// Validate this review is the Author's to delete
+			var googleId = GetUserGoogleId();
+
+            if (String.IsNullOrEmpty(googleId))
+                return BadRequest();
+            
+			var authorOwnsReview = await RRRepo.CheckAuthorOwnsReviewByGoogleId(id.Value, googleId);
+
+            if (!authorOwnsReview) 
+                return BadRequest();
+
+            // we've passed all validations, proceed with deletion
+            try 
+            {
+                await RRRepo.DeleteReviewById(id.Value);
+                return Ok();
+            }
+            catch (Exception e) 
+            {
+                Console.WriteLine(e);
+                return BadRequest();
+            }
+            
         }
 
     }

@@ -1,4 +1,6 @@
-namespace RR_NEU_API.Models 
+using RR_NEU_API.Models;
+
+namespace RR_NEU_API.ViewModels 
 {
   public class AddReviewRequest 
   {

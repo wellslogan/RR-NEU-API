@@ -10,10 +10,8 @@ using System.IdentityModel.Tokens.Jwt;
 namespace RR_NEU_API.Controllers
 {
 	[Route("api/[controller]")]
-	public class UsersController : Controller
+	public class UsersController : BaseController
     {
-		public IRRRepository RRRepo { get; set; }
-
 		public UsersController(IRRRepository _repo)
 		{
 			RRRepo = _repo;
@@ -22,7 +20,7 @@ namespace RR_NEU_API.Controllers
         [HttpGet("getCurrentUserReviews"), Authorize]
         public async Task<IActionResult> GetCurrentUserReviews() 
         {
-            var googleId = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            var googleId = GetUserGoogleId();
 
             if (googleId == null)
                 return BadRequest();

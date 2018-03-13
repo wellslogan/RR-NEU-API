@@ -9,19 +9,18 @@ using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RR_NEU_API.Models;
+using RR_NEU_API.ViewModels;
 using RR_NEU_API.Repository;
 
 namespace RR_NEU_API.Controllers
 {
     [Route("api/[controller]")]
-    public class RestroomsController : Controller
+    public class RestroomsController : BaseController
     {
-        public IRRRepository RRRepo { get; set; }
-        public RestroomsController(IRRRepository _repo)
+        public RestroomsController(IRRRepository _repo) 
         {
-            RRRepo = _repo;
+            this.RRRepo = _repo;
         }
-
         // GET api/restrooms
         [HttpGet]
         public async Task<IActionResult> Get() 
@@ -81,9 +80,6 @@ namespace RR_NEU_API.Controllers
 
             await RRRepo.Add(restroom);
             return Ok(new {Success = true});
-        }
-
-        
-
+        }       
     }
 }

@@ -45,6 +45,8 @@ namespace RR_NEU_API.Contexts {
 
                 entity.Property(e => e.Location).HasColumnName("location");
 
+                entity.Ignore(e => e.AverageRating);
+
                 entity.HasMany(r => r.Reviews).WithOne(rev => rev.Restroom).HasForeignKey(e => e.RestroomId);
 
             });
@@ -67,7 +69,7 @@ namespace RR_NEU_API.Contexts {
 
                 entity.Property(e => e.Rating).HasColumnName("rating");
 
-                entity.Property(e => e.RestroomId).HasColumnName("restroomId");
+                entity.Property(e => e.RestroomId).HasColumnName("restroom_id");
 
                 entity.Property(e => e.AuthorId).HasColumnName("author_id");
 

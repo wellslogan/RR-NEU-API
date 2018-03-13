@@ -68,11 +68,11 @@ namespace RR_NEU_API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseAuthentication();
+
             app.UseCors(builder => builder.AllowAnyOrigin()
                                 .AllowAnyMethod()
                                 .AllowAnyHeader());
-
-            app.UseAuthentication();
 
             app.UseMvc();
         }

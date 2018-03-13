@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RR_NEU_API.Models;
 using RR_NEU_API.Contexts;
+using RR_NEU_API.Extensions;
 
 namespace RR_NEU_API.Repository {
   public class RRRepository : IRRRepository
@@ -29,7 +30,18 @@ namespace RR_NEU_API.Repository {
 
     public async Task<IList<Restroom>> GetAll()
     {
-        return await _context.Restrooms.ToListAsync();
+        return await _context.Restrooms.Include(r => r.Reviews)//.ToListAsync();
+        /*return rooms*/.Select(r => new Restroom {
+                    Id = r.Id,
+                    Description = r.Description,
+                    Latitude = r.Latitude,
+                    Longitude = r.Longitude,
+                    Location = r.Location,
+                    CreateDate = r.CreateDate,
+                    Reviews = r.Reviews,
+                    AverageRating = r.Reviews.Select(re => re.Rating).AverageOrNull()
+                }
+        ).ToListAsync();
     }
 
     public async Task<Restroom> GetById(int id)
@@ -62,5 +74,28 @@ namespace RR_NEU_API.Repository {
                              .Include(review => review.Restroom)
                              .Where(r => r.AuthorId == id).ToListAsync();
     }
+
+    public async Task<bool> CheckAuthorOwnsReviewByGoogleId(int reviewId, string googleId)
+    {
+        var numberOfReviewsByTheAuthorWithThisGoogleId  = await _context.Reviews
+            .Join(_context.Authors,
+                    review => review.AuthorId, 
+                    author => author.Id, 
+                    (review, author) => new { Review = review, Author = author})
+            .Where(reviewAndAuthor => 
+                reviewAndAuthor.Author.GoogleId == googleId 
+                && reviewAndAuthor.Review.Id == reviewId)
+            .CountAsync();
+
+        return numberOfReviewsByTheAuthorWithThisGoogleId == 1;
+    }
+
+    public async Task DeleteReviewById(int id)
+    {
+        var toRemove = await _context.Reviews.FindAsync(id);
+        _context.Reviews.Remove(toRemove);
+        await _context.SaveChangesAsync();
+    }
+
   }
 }

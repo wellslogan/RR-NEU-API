@@ -15,6 +15,8 @@ namespace RR_NEU_API.Models
 
       public DateTime CreateDate { get; set; }
 
+      public double? AverageRating { get; set; }
+
       public string Location { get; set; }
 
       public virtual List<Review> Reviews { get; set; }
