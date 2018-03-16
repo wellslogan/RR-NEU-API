@@ -34,10 +34,16 @@ namespace RR_NEU_API.Controllers
         public async Task<IActionResult> GetById(int id) 
         {
             var room = await RRRepo.GetById(id);
+            var currentUserGoogleId = GetUserGoogleId();
+            Author currentAuthor = null;
+
+            if (!string.IsNullOrEmpty(currentUserGoogleId))
+                currentAuthor = await RRRepo.GetAuthorByGoogleId(currentUserGoogleId);
 
             foreach (var review in room.Reviews) 
             {
-                if (review.AuthorIsAnonymous) 
+                // if it's their own review, don't strip the AuthorId
+                if (review.AuthorIsAnonymous && review.AuthorId != currentAuthor?.Id) 
                 {
                     review.Author = null;
                     review.AuthorId = -1;

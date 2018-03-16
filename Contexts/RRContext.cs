@@ -45,6 +45,8 @@ namespace RR_NEU_API.Contexts {
 
                 entity.Property(e => e.Location).HasColumnName("location");
 
+                entity.Property(e => e.RestroomGender).HasColumnName("gender");
+
                 entity.Ignore(e => e.AverageRating);
 
                 entity.HasMany(r => r.Reviews).WithOne(rev => rev.Restroom).HasForeignKey(e => e.RestroomId);

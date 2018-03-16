@@ -19,6 +19,8 @@ namespace RR_NEU_API.Models
 
       public string Location { get; set; }
 
+      public int? RestroomGender { get; set; }
+
       public virtual List<Review> Reviews { get; set; }
 
     }

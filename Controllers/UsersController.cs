@@ -49,7 +49,10 @@ namespace RR_NEU_API.Controllers
 
             if (author != null) 
             {
-                return Ok(true);
+                return Ok(new {
+                    Success = true,
+                    Id = author.Id
+                });
             }
 
             author = new Models.Author()
@@ -62,7 +65,8 @@ namespace RR_NEU_API.Controllers
 
             return Ok(new
             {
-                Success = true
+                Success = true,
+                Id = author.Id
             });
         }
     }

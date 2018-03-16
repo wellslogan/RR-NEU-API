@@ -62,7 +62,7 @@ namespace RR_NEU_API.Controllers
             return Ok(new {Success = true});
         }
 
-        [HttpDelete("review/{id}"), Authorize]
+        [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> deleteReview(int? id) 
         {
             if (id == null) 
@@ -83,7 +83,9 @@ namespace RR_NEU_API.Controllers
             try 
             {
                 await RRRepo.DeleteReviewById(id.Value);
-                return Ok();
+                return Ok(new {
+                    Success = true
+                });
             }
             catch (Exception e) 
             {
