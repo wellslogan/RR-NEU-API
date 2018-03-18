@@ -40,7 +40,7 @@ namespace RR_NEU_API.Controllers
 
             if (!successfulCaptcha) 
             {
-                return Ok(new { Success = false});
+                return Ok(new { Success = false });
             }
 
             // now that we've successfully passed all validations, get the Author id
@@ -53,13 +53,26 @@ namespace RR_NEU_API.Controllers
             }
 
             var author = await RRRepo.GetAuthorByGoogleId(googleId);
+
+            var authorsReviews = await RRRepo.GetReviewsByAuthorId(author.Id);
+
+            if (authorsReviews?.FirstOrDefault(rev => rev.RestroomId == review.RestroomId) != null) {
+                return Ok(new {
+                    Success = false,
+                    Error = "ALREADY_EXISTS"
+                });
+            }
+
             var restroom = await RRRepo.GetById(review.RestroomId);
 
             review.Author = author;
             review.Restroom = restroom;
 
             await RRRepo.AddReview(review);
-            return Ok(new {Success = true});
+            return Ok(new { 
+                Success = true,
+                Review = review,
+            });
         }
 
         [HttpDelete("{id}"), Authorize]
